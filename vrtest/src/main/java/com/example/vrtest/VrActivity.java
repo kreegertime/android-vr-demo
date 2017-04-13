@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.Bundle;
 
+import com.example.mylibrary.Field;
 import com.example.mylibrary.Pitch;
 import com.google.vr.sdk.base.AndroidCompat;
 import com.google.vr.sdk.base.Eye;
@@ -17,15 +18,16 @@ import javax.microedition.khronos.egl.EGLConfig;
 public class VrActivity extends GvrActivity implements GvrView.StereoRenderer {
 
     private static final float Z_NEAR = 0.1f;
-    private static final float Z_FAR = 200.0f;
+    private static final float Z_FAR = 500.0f;
 
     private final float[] mCamera = new float[16];
     private final float[] mMVPMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
-    private static final int PITCH_COUNT = 10;
+    private static final int PITCH_COUNT = 1;
     private Pitch pitch[] = new Pitch[PITCH_COUNT];
+
+    private Field field;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class VrActivity extends GvrActivity implements GvrView.StereoRenderer {
         // We are looking toward the distance
         final float lookX = 0.0f;
         final float lookY = 0.0f;
-        final float lookZ = -5.0f;
+        final float lookZ = 0.0f;
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
         final float upX = 0.0f;
@@ -87,22 +89,11 @@ public class VrActivity extends GvrActivity implements GvrView.StereoRenderer {
         float perspective[] = eye.getPerspective(Z_NEAR, Z_FAR);
         Matrix.multiplyMM(mMVPMatrix, 0, perspective, 0, mViewMatrix, 0);
 
+        field.draw(mMVPMatrix);
+
         for (int i = 0; i < PITCH_COUNT; i++) {
             pitch[i].draw(mMVPMatrix);
         }
-
-//        // Apply the eye transformation to the camera.
-//        Matrix.multiplyMM(view, 0, eye.getEyeView(), 0, camera, 0);
-//
-//        // Set the position of the light
-//        Matrix.multiplyMV(lightPosInEyeSpace, 0, view, 0, LIGHT_POS_IN_WORLD_SPACE, 0);
-//
-//        // Build the ModelView and ModelViewProjection matrices
-//        // for calculating cube position and light.
-//        float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
-//        Matrix.multiplyMM(modelView, 0, view, 0, modelCube, 0);
-//        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-//        drawCube();
     }
 
     @Override
@@ -117,11 +108,9 @@ public class VrActivity extends GvrActivity implements GvrView.StereoRenderer {
 
         for (int i = 0; i < PITCH_COUNT; i++) {
             pitch[i] = new Pitch(getApplicationContext());
-            pitch[i].setBallCoords(
-                    (float) (Math.random() * 40) - 10,
-                    (float) (Math.random() * i * i) + 10,
-                    -200.0f);
         }
+
+        field = new Field();
     }
 
     @Override
