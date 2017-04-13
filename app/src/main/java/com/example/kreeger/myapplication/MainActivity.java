@@ -1,0 +1,19 @@
+package com.example.kreeger.myapplication;
+
+import android.opengl.GLSurfaceView;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class MainActivity extends AppCompatActivity {
+
+    private GLSurfaceView mGLView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Create a GLSurfaceView and set it as the ContentView for this Activity.
+        mGLView = new TestGLSurfaceView(this);
+        setContentView(mGLView);
+    }
+}
